@@ -7,6 +7,7 @@ import CartSummary from '../components/cart/CartSummary'
 import EmptyState from '../components/common/EmptyState'
 import { PrimaryButton, SecondaryButton } from '../components/common/Button'
 import ImageWithFallback from '../components/common/ImageWithFallback'
+import { unsplashSrcSet } from '../utils/images'
 import { formatINR, isValidEmail, isValidPhone, isValidPostal } from '../utils/format'
 import { DoodleCheck, DoodleStar } from '../components/common/DoodleElements'
 
@@ -279,6 +280,8 @@ export default function Checkout() {
                         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg border-2 border-choco bg-butter">
                           <ImageWithFallback
                             src={item.image}
+                            srcSet={unsplashSrcSet(item.image, [96, 144, 192])}
+                            sizes="48px"
                             alt={item.name}
                             className="h-full w-full object-cover"
                           />

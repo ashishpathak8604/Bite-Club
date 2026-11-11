@@ -1,5 +1,6 @@
-import { ArrowRight, Phone ,ArrowUpRight} from 'lucide-react'
+import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { finalCtaImage } from '../../data/siteData'
+import { unsplashSrcSet } from '../../utils/images'
 import { PrimaryButton, SecondaryButton } from '../common/Button'
 import ScrollReveal from '../common/ScrollReveal'
 import ImageWithFallback from '../common/ImageWithFallback'
@@ -64,6 +65,8 @@ export default function FinalCTA() {
             <div className="h-full w-full overflow-hidden rounded-full border-[3px] border-choco">
               <ImageWithFallback
                 src={finalCtaImage}
+                srcSet={unsplashSrcSet(finalCtaImage, [400, 600, 900])}
+                sizes="(max-width: 640px) 78vw, 400px"
                 alt="Juicy stacked burger with melted cheese"
                 className="h-full w-full object-cover"
               />

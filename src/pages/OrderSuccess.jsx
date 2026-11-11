@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { PrimaryButton, SecondaryButton } from '../components/common/Button'
 import EmptyState from '../components/common/EmptyState'
 import ImageWithFallback from '../components/common/ImageWithFallback'
+import { unsplashSrcSet } from '../utils/images'
 import { formatINR, loadJSON } from '../utils/format'
 import {
   DoodleBurst,
@@ -139,6 +140,8 @@ export default function OrderSuccess() {
                     <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 border-choco bg-butter">
                       <ImageWithFallback
                         src={item.image}
+                        srcSet={unsplashSrcSet(item.image, [112, 168, 224])}
+                        sizes="56px"
                         alt={item.name}
                         className="h-full w-full object-cover"
                       />

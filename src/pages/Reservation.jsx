@@ -15,6 +15,7 @@ import {
 import PageHero from '../components/common/PageHero'
 import { PrimaryButton, SecondaryButton } from '../components/common/Button'
 import ImageWithFallback from '../components/common/ImageWithFallback'
+import { unsplashSrcSet } from '../utils/images'
 import { aboutImages, siteInfo } from '../data/siteData'
 import { isValidEmail, isValidPhone, loadJSON, saveJSON } from '../utils/format'
 import { scrollToTop } from '../utils/scroll'
@@ -406,6 +407,8 @@ export default function Reservation() {
               <div className="overflow-hidden rounded-[1.8rem] border-[3px] border-choco shadow-[5px_5px_0_0_#553B32]">
                 <ImageWithFallback
                   src={aboutImages.interior}
+                  srcSet={unsplashSrcSet(aboutImages.interior, [400, 600, 900])}
+                  sizes="(max-width: 1024px) 92vw, 420px"
                   alt="Cosy restaurant dining room"
                   className="h-48 w-full object-cover"
                 />

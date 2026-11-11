@@ -1,9 +1,5 @@
-import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
 import { ArrowDown, ArrowRight, Sparkles } from 'lucide-react'
-import cheesyPizza from '../../assets/images/CheesyPizza.png'
 import { PrimaryButton, SecondaryButton } from '../common/Button'
-import ImageWithFallback from '../common/ImageWithFallback'
 import Stars from '../common/Stars'
 import {
   DoodleArrow,
@@ -15,54 +11,8 @@ import {
 } from '../common/DoodleElements'
 
 export default function Hero() {
-  const root = useRef(null)
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    const ctx = gsap.context(() => {
-      gsap.from('[data-hero-word]', {
-        yPercent: 115,
-        rotate: 5,
-        duration: 1,
-        stagger: 0.09,
-        ease: 'power4.out',
-        delay: 0.15,
-      })
-      gsap.from('[data-hero-plate]', {
-        scale: 0.78,
-        opacity: 0,
-        rotate: -10,
-        duration: 1.2,
-        ease: 'power3.out',
-        delay: 0.2,
-      })
-      gsap.from('[data-hero-fade]', {
-        opacity: 0,
-        y: 24,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'power2.out',
-        delay: 0.55,
-      })
-      gsap.from('[data-hero-doodle]', {
-        scale: 0,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.08,
-        ease: 'back.out(2.2)',
-        delay: 0.9,
-      })
-    }, root)
-
-    return () => ctx.revert()
-  }, [])
-
   return (
-    <section
-      ref={root}
-      className="relative isolate overflow-hidden bg-orange pb-14 pt-28 sm:pb-20 sm:pt-32"
-    >
+    <section className="relative isolate overflow-hidden bg-orange pb-14 pt-28 sm:pb-20 sm:pt-32">
       <div className="halftone pointer-events-none absolute inset-0 opacity-[0.16]" aria-hidden="true" />
       <div className="grid-lines pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
 
@@ -81,27 +31,33 @@ export default function Hero() {
 
       <DoodlePizza
         data-hero-doodle
-        className="absolute left-[3%] top-[22%] hidden h-20 w-20 -rotate-12 text-choco/80 lg:block"
+        className="hero-doodle absolute left-[3%] top-[22%] hidden h-20 w-20 -rotate-12 text-choco/80 lg:block"
+        style={{ animationDelay: '0.55s' }}
       />
       <DoodleChili
         data-hero-doodle
-        className="absolute right-[4%] top-[30%] hidden h-16 w-16 rotate-12 text-choco/80 lg:block"
+        className="hero-doodle absolute right-[4%] top-[30%] hidden h-16 w-16 rotate-12 text-choco/80 lg:block"
+        style={{ animationDelay: '0.61s' }}
       />
       <DoodleSwirl
         data-hero-doodle
-        className="absolute left-[7%] bottom-[18%] hidden h-16 w-16 text-choco/35 xl:block"
+        className="hero-doodle absolute left-[7%] bottom-[18%] hidden h-16 w-16 text-choco/35 xl:block"
+        style={{ animationDelay: '0.67s' }}
       />
       <DoodleStar
         data-hero-doodle
-        className="wiggle absolute right-[9%] top-[16%] hidden h-10 w-10 text-choco sm:block"
+        className="hero-doodle wiggle absolute right-[9%] top-[16%] hidden h-10 w-10 text-choco sm:block"
+        style={{ animationDelay: '0.73s' }}
       />
       <DoodleSparkle
         data-hero-doodle
-        className="absolute left-[16%] top-[14%] h-6 w-6 text-choco/70"
+        className="hero-doodle absolute left-[16%] top-[14%] h-6 w-6 text-choco/70"
+        style={{ animationDelay: '0.79s' }}
       />
       <DoodleArrow
         data-hero-doodle
-        className="absolute left-[10%] top-[46%] hidden h-14 w-24 -scale-x-100 text-choco/50 xl:block"
+        className="hero-doodle absolute left-[10%] top-[46%] hidden h-14 w-24 -scale-x-100 text-choco/50 xl:block"
+        style={{ animationDelay: '0.85s' }}
       />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
@@ -109,21 +65,22 @@ export default function Hero() {
           <div className="flex flex-col items-center lg:items-end lg:text-right">
             <span
               data-hero-fade
-              className="mb-1 font-script text-xl text-choco/80 sm:text-2xl lg:mr-2"
+              className="hero-fade mb-1 font-script text-xl text-choco/80 sm:text-2xl lg:mr-2"
+              style={{ animationDelay: '0.3s' }}
             >
               seriously
             </span>
             <h1 className="font-display text-[clamp(3.4rem,10vw,7.5rem)] leading-[0.8]">
               <span className="block overflow-hidden">
-                <span data-hero-word className="block">
+                <span data-hero-word className="hero-word block" style={{ animationDelay: '0.15s' }}>
                   SO
                 </span>
               </span>
               <span className="block overflow-hidden">
                 <span
                   data-hero-word
-                  className="block text-cream"
-                  style={{ textShadow: '5px 5px 0 #553B32' }}
+                  className="hero-word block text-cream"
+                  style={{ textShadow: '5px 5px 0 #553B32', animationDelay: '0.24s' }}
                 >
                   GOOD
                 </span>
@@ -133,17 +90,37 @@ export default function Hero() {
 
           <div
             data-hero-plate
-            className="relative mx-auto my-2 aspect-square w-[min(78vw,360px)] sm:w-[min(58vw,410px)] lg:w-[420px]"
+            className="hero-plate relative mx-auto my-2 aspect-square w-[min(78vw,360px)] sm:w-[min(58vw,410px)] lg:w-[420px]"
+            style={{ animationDelay: '0.05s' }}
           >
         
             <div className="plate-float absolute left-[-2.94%] top-[9.94%] h-[98.12%] w-[98.12%]  rotate-[-16deg]">
               <div className="absolute left-[-10.42%] top-[-3.91%] aspect-[1445/1089] w-[146.8%]">
-                <ImageWithFallback
-                  src={cheesyPizza}
-                  alt="Cheesy pizza with a slice being pulled away"
-                  loading="eager"
-                  className="h-full w-full object-contain"
-                />
+                <picture className="block h-full w-full">
+                  <source
+                    type="image/avif"
+                    srcSet="/images/hero-pizza-480.avif 480w, /images/hero-pizza-800.avif 800w, /images/hero-pizza-1100.avif 1100w"
+                    sizes="(max-width: 640px) 115vw, (max-width: 1024px) 86vw, 620px"
+                  />
+                  <source
+                    type="image/webp"
+                    srcSet="/images/hero-pizza-480.webp 480w, /images/hero-pizza-800.webp 800w, /images/hero-pizza-1100.webp 1100w"
+                    sizes="(max-width: 640px) 115vw, (max-width: 1024px) 86vw, 620px"
+                  />
+                  <img
+                    src="/images/hero-pizza-800.webp"
+                    srcSet="/images/hero-pizza-480.webp 480w, /images/hero-pizza-800.webp 800w, /images/hero-pizza-1100.webp 1100w"
+                    sizes="(max-width: 640px) 115vw, (max-width: 1024px) 86vw, 620px"
+                    alt="Cheesy pizza with a slice being pulled away"
+                    width="1445"
+                    height="1089"
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
+                    draggable="false"
+                    className="h-full w-full object-contain"
+                  />
+                </picture>
               </div>
               <div
                 className="plate-shadow absolute inset-x-0 top-[102%] mx-auto h-[7%] w-[60%] rounded-[50%] bg-choco/30 blur-md"
@@ -153,19 +130,22 @@ export default function Hero() {
 
             <div
               data-hero-doodle
-              className="absolute -left-4 top-8 rotate-[-8deg] rounded-full border-2 border-choco bg-butter px-3 py-1 text-[11px] font-bold uppercase tracking-wide shadow-[3px_3px_0_0_#553B32] sm:-left-8"
+              className="hero-doodle absolute -left-4 top-8 rotate-[-8deg] rounded-full border-2 border-choco bg-butter px-3 py-1 text-[11px] font-bold uppercase tracking-wide shadow-[3px_3px_0_0_#553B32] sm:-left-8"
+              style={{ animationDelay: '0.55s' }}
             >
               fresh daily
             </div>
             <div
               data-hero-doodle
-              className="absolute -right-3 bottom-20 rotate-6 rounded-full border-2 border-choco bg-pistachio px-3 py-1 text-[11px] font-bold uppercase tracking-wide shadow-[3px_3px_0_0_#553B32] sm:-right-6"
+              className="hero-doodle absolute -right-3 bottom-20 rotate-6 rounded-full border-2 border-choco bg-pistachio px-3 py-1 text-[11px] font-bold uppercase tracking-wide shadow-[3px_3px_0_0_#553B32] sm:-right-6"
+              style={{ animationDelay: '0.61s' }}
             >
               ★ 4.8 rated
             </div>
             <div
               data-hero-doodle
-              className="absolute -right-2 -top-2 hidden rotate-6 rounded-2xl rounded-bl-none border-2 border-choco bg-cream px-3 py-1 font-script text-lg leading-none shadow-[3px_3px_0_0_#553B32] sm:block"
+              className="hero-doodle absolute -right-2 -top-2 hidden rotate-6 rounded-2xl rounded-bl-none border-2 border-choco bg-cream px-3 py-1 font-script text-lg leading-none shadow-[3px_3px_0_0_#553B32] sm:block"
+              style={{ animationDelay: '0.67s' }}
             >
               yum!
             </div>
@@ -174,26 +154,35 @@ export default function Hero() {
           <div className="flex flex-col items-center lg:items-start lg:text-left lg:translate-x-8">
             <h1 className="font-display text-[clamp(3.4rem,10vw,7.5rem)] leading-[0.8]">
               <span className="block overflow-hidden">
-                <span data-hero-word className="block">
+                <span data-hero-word className="hero-word block" style={{ animationDelay: '0.33s' }}>
                   IT
                 </span>
               </span>
               <span className="block overflow-hidden">
-                <span data-hero-word className="text-outline block">
+                <span
+                  data-hero-word
+                  className="hero-word text-outline block"
+                  style={{ animationDelay: '0.42s' }}
+                >
                   HURTS
                 </span>
               </span>
             </h1>
             <span
               data-hero-fade
-              className="mt-1 font-script text-xl text-choco/80 sm:text-2xl lg:ml-2"
+              className="hero-fade mt-1 font-script text-xl text-choco/80 sm:text-2xl lg:ml-2"
+              style={{ animationDelay: '0.38s' }}
             >
               in the best way
             </span>
           </div>
         </div>
 
-        <div data-hero-fade className="mx-auto mt-8 flex max-w-2xl flex-col items-center text-center sm:mt-10">
+        <div
+          data-hero-fade
+          className="hero-fade mx-auto mt-8 flex max-w-2xl flex-col items-center text-center sm:mt-10"
+          style={{ animationDelay: '0.46s' }}
+        >
           <p className="text-pretty text-sm leading-relaxed text-choco/80 sm:text-base">
             Big flavours, playful plates and a dining room that feels like a good mood.
             Welcome to Bite Club — a fictional kitchen with very real cravings.

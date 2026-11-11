@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 
 const FALLBACK = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
@@ -10,25 +10,39 @@ const FALLBACK = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
   </svg>`,
 )}`
 
-export default function ImageWithFallback({
+function ImageWithFallback({
   src,
   alt = '',
   className = '',
   loading = 'lazy',
+  decoding = 'async',
+  srcSet,
+  sizes,
+  width,
+  height,
+  fetchPriority,
   ...props
 }) {
-  const [failed, setFailed] = useState(false)
+  const [failedSrc, setFailedSrc] = useState(null)
+  const failed = failedSrc === src
 
   return (
     <img
       src={failed ? FALLBACK : src}
+      srcSet={failed ? undefined : srcSet}
+      sizes={sizes}
       alt={alt}
       className={className}
       loading={loading}
-      decoding="async"
+      decoding={decoding}
+      width={width}
+      height={height}
+      fetchPriority={fetchPriority}
       draggable="false"
-      onError={() => setFailed(true)}
+      onError={() => setFailedSrc(src)}
       {...props}
     />
   )
 }
+
+export default memo(ImageWithFallback)

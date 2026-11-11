@@ -2,6 +2,7 @@
 import { ArrowRight, CakeSlice, Flame, HeartHandshake, Leaf } from 'lucide-react'
 import SectionHeading from '../components/common/SectionHeading'
 import ImageWithFallback from '../components/common/ImageWithFallback'
+import { unsplashSrcSet } from '../utils/images'
 import { PrimaryButton, SecondaryButton } from '../components/common/Button'
 import { aboutImages } from '../data/siteData'
 import {
@@ -142,7 +143,11 @@ export default function About() {
             <div className="sticker-lg group overflow-hidden rounded-[2rem] transition-transform duration-500 ease-out hover:-translate-y-2 lg:rotate-2">
               <ImageWithFallback
                 src={aboutImages.interior}
+                srcSet={unsplashSrcSet(aboutImages.interior, [500, 800, 1100])}
+                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 560px"
                 alt="Warm restaurant interior with wooden tables and soft lighting"
+                loading="eager"
+                fetchPriority="high"
                 className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 sm:aspect-[5/6]"
               />
             </div>
@@ -150,6 +155,8 @@ export default function About() {
             <div className="absolute -bottom-6 -left-4 hidden h-36 w-36 rotate-[-8deg] overflow-hidden rounded-[1.4rem] border-[3px] border-choco shadow-[5px_5px_0_0_#553B32] transition-transform duration-500 hover:-translate-y-2 hover:rotate-0 sm:block">
               <ImageWithFallback
                 src={aboutImages.ingredients}
+                srcSet={unsplashSrcSet(aboutImages.ingredients, [200, 300, 400])}
+                sizes="144px"
                 alt="Fresh salad ingredients"
                 className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
               />
@@ -190,6 +197,8 @@ export default function About() {
               <div className="sticker group overflow-hidden rounded-[2rem] transition-transform duration-500 hover:-translate-y-2 lg:-rotate-1">
                 <ImageWithFallback
                   src={aboutImages.kitchen}
+                  srcSet={unsplashSrcSet(aboutImages.kitchen, [500, 800, 1100])}
+                  sizes="(max-width: 1024px) 90vw, 45vw"
                   alt="Hands preparing fresh ingredients in the kitchen"
                   className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
@@ -316,6 +325,8 @@ export default function About() {
             <div className="sticker-lg group overflow-hidden rounded-[2rem] transition-transform duration-500 hover:-translate-y-2 lg:rotate-1">
               <ImageWithFallback
                 src={aboutImages.ingredients}
+                srcSet={unsplashSrcSet(aboutImages.ingredients, [500, 800, 1100])}
+                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 560px"
                 alt="Fresh vegetables and ingredients arranged on a table"
                 className="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -358,6 +369,8 @@ export default function About() {
                 <div className="overflow-hidden border-b-[3px] border-choco">
                   <ImageWithFallback
                     src={person.image}
+                    srcSet={unsplashSrcSet(person.image, [300, 450, 600])}
+                    sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
                     alt={`${person.name}, ${person.role}`}
                     className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
@@ -389,6 +402,8 @@ export default function About() {
           <div className="group relative overflow-hidden rounded-[2.2rem] border-[3px] border-choco transition-transform duration-500 hover:-translate-y-2">
             <ImageWithFallback
               src={aboutImages.interior}
+              srcSet={unsplashSrcSet(aboutImages.interior, [800, 1200, 1600])}
+              sizes="100vw"
               alt="Dining room at Bite Club with warm lighting"
               className="h-[420px] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 sm:h-[520px]"
             />

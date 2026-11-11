@@ -1,10 +1,12 @@
+import { memo } from 'react'
 import { Plus } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { formatINR } from '../../utils/format'
+import { unsplashSrcSet } from '../../utils/images'
 import ImageWithFallback from '../common/ImageWithFallback'
 import QuantitySelector from '../common/QuantitySelector'
 
-export default function FoodCard({ item, className = '' }) {
+function FoodCard({ item, className = '' }) {
   const { addItem, increment, decrement, getQty } = useCart()
   const qty = getQty(item.id)
   const available = item.available !== false
@@ -18,6 +20,8 @@ export default function FoodCard({ item, className = '' }) {
       <div className="relative aspect-[4/3] overflow-hidden border-b-[3px] border-choco bg-butter">
         <ImageWithFallback
           src={item.image}
+          srcSet={unsplashSrcSet(item.image, [400, 600, 900])}
+          sizes="(max-width: 640px) 78vw, (max-width: 1024px) 44vw, 440px"
           alt={item.name}
           className={`h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
             available ? '' : 'grayscale'
@@ -53,7 +57,7 @@ export default function FoodCard({ item, className = '' }) {
             {formatINR(item.price)}
           </span>
         </div>
-        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-choco/65">
+        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-choco/80">
           {item.description}
         </p>
 
@@ -82,3 +86,5 @@ export default function FoodCard({ item, className = '' }) {
     </article>
   )
 }
+
+export default memo(FoodCard)

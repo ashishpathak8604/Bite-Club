@@ -27,9 +27,6 @@ export const navLinks = [
   { to: '/gallery', label: 'Gallery' },
 ]
 
-export const heroImage =
-  'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=85'
-
 export const finalCtaImage =
   'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=85'
 

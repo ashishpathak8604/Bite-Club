@@ -1,4 +1,5 @@
 import { Expand } from 'lucide-react'
+import { unsplashSrcSet } from '../../utils/images'
 import ImageWithFallback from '../common/ImageWithFallback'
 
 const categoryLabels = {
@@ -22,6 +23,8 @@ export default function GalleryGrid({ items, onOpen }) {
           <div className={`relative w-full ${image.aspect}`}>
             <ImageWithFallback
               src={image.src}
+              srcSet={unsplashSrcSet(image.src, [400, 700, 1000])}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               alt={image.alt}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />

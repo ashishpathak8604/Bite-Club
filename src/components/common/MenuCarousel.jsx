@@ -1,36 +1,65 @@
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import FoodCard from '../menu/FoodCard'
 
+const ROTATIONS = [
+  '-rotate-[1.5deg]',
+  'rotate-[1deg]',
+  '-rotate-[0.5deg]',
+  'rotate-[1.5deg]',
+]
+
 export default function MenuCarousel({ items }) {
   const trackRef = useRef(null)
+  const segmentRef = useRef(0)
+  const tickingRef = useRef(false)
 
   // Three identical sets allow seamless infinite scrolling.
-  const loopItems = [...items, ...items, ...items]
+  const loopItems = useMemo(() => [...items, ...items, ...items], [items])
 
   useEffect(() => {
     const track = trackRef.current
     if (!track || !items.length) return
 
-    const frame = requestAnimationFrame(() => {
-      track.scrollLeft = track.scrollWidth / 3
-    })
+    const measure = () => {
+      const cards = track.querySelectorAll('[data-carousel-card]')
+      const first = cards[0]
+      const secondSet = cards[items.length]
+      if (!first || !secondSet) return
 
-    return () => cancelAnimationFrame(frame)
+      segmentRef.current = secondSet.offsetLeft - first.offsetLeft
+      if (segmentRef.current > 0) {
+        track.scrollLeft = segmentRef.current
+      }
+    }
+
+    const frame = requestAnimationFrame(measure)
+    const observer = new ResizeObserver(measure)
+    observer.observe(track)
+
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+    }
   }, [items])
 
   const handleInfiniteScroll = () => {
-    const track = trackRef.current
-    if (!track) return
+    if (tickingRef.current) return
+    tickingRef.current = true
 
-    const segmentWidth = track.scrollWidth / 3
+    requestAnimationFrame(() => {
+      tickingRef.current = false
+      const track = trackRef.current
+      const segmentWidth = segmentRef.current
+      if (!track || segmentWidth <= 0) return
 
-    if (track.scrollLeft < segmentWidth * 0.5) {
-      track.scrollLeft += segmentWidth
-    } else if (track.scrollLeft > segmentWidth * 2.5) {
-      track.scrollLeft -= segmentWidth
-    }
+      if (track.scrollLeft < segmentWidth * 0.5) {
+        track.scrollLeft += segmentWidth
+      } else if (track.scrollLeft > segmentWidth * 2.5) {
+        track.scrollLeft -= segmentWidth
+      }
+    })
   }
 
   const scrollBy = (direction) => {
@@ -48,13 +77,6 @@ export default function MenuCarousel({ items }) {
       behavior: 'smooth',
     })
   }
-
-  const rotations = [
-    '-rotate-[1.5deg]',
-    'rotate-[1deg]',
-    '-rotate-[0.5deg]',
-    'rotate-[1.5deg]',
-  ]
 
   return (
     <div className="w-full overflow-hidden">
@@ -77,7 +99,7 @@ export default function MenuCarousel({ items }) {
               w-[78vw] max-w-[440px] shrink-0 snap-center
               sm:w-[43vw]
               lg:w-[24vw]
-              ${rotations[index % rotations.length]}
+              ${ROTATIONS[index % ROTATIONS.length]}
               transition-transform duration-500
               hover:rotate-0 hover:-translate-y-2
             `}

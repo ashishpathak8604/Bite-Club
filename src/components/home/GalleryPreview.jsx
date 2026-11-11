@@ -1,6 +1,7 @@
 
 import { ArrowRight, Camera } from 'lucide-react'
 import { galleryData } from '../../data/galleryData'
+import { unsplashSrcSet } from '../../utils/images'
 import SectionHeading from '../common/SectionHeading'
 import ScrollReveal from '../common/ScrollReveal'
 import ImageWithFallback from '../common/ImageWithFallback'
@@ -133,6 +134,8 @@ export default function GalleryPreview() {
 
                 <ImageWithFallback
                   src={item.image.src}
+                  srcSet={unsplashSrcSet(item.image.src, [400, 700, 1000])}
+                  sizes="(max-width: 1024px) 50vw, 25vw"
                   alt={item.image.alt}
                   className="
                     h-full w-full object-cover
@@ -189,7 +192,7 @@ export default function GalleryPreview() {
         <div className="mt-10 flex items-center justify-center gap-2 text-center">
           <DoodleUnderline className="hidden h-3 w-16 text-choco/40 sm:block" />
 
-          <p className="font-script text-lg text-choco/70 sm:text-xl">
+          <p className="font-script text-lg text-choco/80 sm:text-xl">
             yes, the walls are really that colour
           </p>
 

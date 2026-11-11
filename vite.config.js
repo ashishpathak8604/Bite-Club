@@ -11,7 +11,6 @@ export default defineConfig({
           if (!id.includes('node_modules')) return
           if (id.includes('react-router') || id.includes('react-dom') || id.includes('/react/')) return 'react'
           if (id.includes('framer-motion') || id.includes('motion-dom') || id.includes('motion-utils')) return 'motion'
-          if (id.includes('gsap')) return 'gsap'
           if (id.includes('lenis')) return 'lenis'
           if (id.includes('lucide-react')) return 'icons'
         },

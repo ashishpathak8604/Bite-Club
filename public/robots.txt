@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://biteclub-liv.vercel.app/sitemap.xml

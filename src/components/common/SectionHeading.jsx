@@ -34,7 +34,7 @@ export default function SectionHeading({
         )}
       </h2>
       {description && (
-        <p className={`mt-5 max-w-xl text-base leading-relaxed text-choco/75 sm:text-lg ${descriptionClassName}`}>
+        <p className={`mt-5 max-w-xl text-base leading-relaxed text-choco/80 sm:text-lg ${descriptionClassName}`}>
           {description}
         </p>
       )}

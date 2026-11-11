@@ -1,5 +1,5 @@
 
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Images } from 'lucide-react'
 import GalleryGrid from '../components/gallery/GalleryGrid'
 import Lightbox from '../components/gallery/Lightbox'
@@ -19,25 +19,31 @@ export default function Gallery() {
     [category],
   )
 
-  const openImage = (index) => setLightboxIndex(index)
-  const closeImage = () => setLightboxIndex(null)
+  const openImage = useCallback((index) => setLightboxIndex(index), [])
+  const closeImage = useCallback(() => setLightboxIndex(null), [])
 
-  const nextImage = () =>
-    setLightboxIndex((current) =>
-      current === null ? null : (current + 1) % filtered.length,
-    )
+  const nextImage = useCallback(
+    () =>
+      setLightboxIndex((current) =>
+        current === null ? null : (current + 1) % filtered.length,
+      ),
+    [filtered.length],
+  )
 
-  const prevImage = () =>
-    setLightboxIndex((current) =>
-      current === null
-        ? null
-        : (current - 1 + filtered.length) % filtered.length,
-    )
+  const prevImage = useCallback(
+    () =>
+      setLightboxIndex((current) =>
+        current === null
+          ? null
+          : (current - 1 + filtered.length) % filtered.length,
+      ),
+    [filtered.length],
+  )
 
-  const changeCategory = (id) => {
+  const changeCategory = useCallback((id) => {
     setCategory(id)
     setLightboxIndex(null)
-  }
+  }, [])
 
   return (
     <>

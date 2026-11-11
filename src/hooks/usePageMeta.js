@@ -1,6 +1,9 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
+const SITE_URL = 'https://biteclub-liv.vercel.app'
+const SOCIAL_IMAGE = `${SITE_URL}/og-image.webp`
+
 const pages = {
   '/': {
     title: 'Bite Club — Seriously Good Food',
@@ -30,18 +33,22 @@ const pages = {
   '/cart': {
     title: 'Your Bag — Bite Club',
     description: 'Review the dishes in your Bite Club demo bag before heading to checkout.',
+    noindex: true,
   },
   '/checkout': {
     title: 'Checkout — Bite Club',
     description: 'Add your demo delivery details to continue to the simulated Bite Club payment step.',
+    noindex: true,
   },
   '/payment': {
     title: 'Payment — Bite Club',
     description: 'A fully simulated payment step for the Bite Club demo restaurant experience.',
+    noindex: true,
   },
   '/order-success': {
     title: 'Order Confirmed — Bite Club',
     description: 'Your demo Bite Club order confirmation and receipt.',
+    noindex: true,
   },
   '/reservation': {
     title: 'Reservations — Bite Club',
@@ -60,20 +67,45 @@ const pages = {
 const fallback = {
   title: 'Page Not Found — Bite Club',
   description: 'That page is off the menu. Head back to the Bite Club home page or browse the demo menu.',
+  noindex: true,
+}
+
+function setMeta(attribute, key, content) {
+  let tag = document.head.querySelector(`meta[${attribute}="${key}"]`)
+  if (!tag) {
+    tag = document.createElement('meta')
+    tag.setAttribute(attribute, key)
+    document.head.appendChild(tag)
+  }
+  tag.setAttribute('content', content)
 }
 
 export default function usePageMeta() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    const page = pages[pathname] || fallback
+    const normalized = pathname.replace(/\/+$/, '') || '/'
+    const page = pages[normalized] || fallback
+    const url = `${SITE_URL}${normalized === '/' ? '/' : normalized}`
+
     document.title = page.title
-    let tag = document.querySelector('meta[name="description"]')
-    if (!tag) {
-      tag = document.createElement('meta')
-      tag.setAttribute('name', 'description')
-      document.head.appendChild(tag)
+
+    setMeta('name', 'description', page.description)
+    setMeta('name', 'robots', page.noindex ? 'noindex, nofollow' : 'index, follow')
+    setMeta('property', 'og:title', page.title)
+    setMeta('property', 'og:description', page.description)
+    setMeta('property', 'og:url', url)
+    setMeta('property', 'og:image', SOCIAL_IMAGE)
+    setMeta('name', 'twitter:title', page.title)
+    setMeta('name', 'twitter:description', page.description)
+    setMeta('name', 'twitter:image', SOCIAL_IMAGE)
+
+    let canonical = document.head.querySelector('link[rel="canonical"]')
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.setAttribute('rel', 'canonical')
+      document.head.appendChild(canonical)
     }
-    tag.setAttribute('content', page.description)
+    canonical.setAttribute('href', url)
   }, [pathname])
 }

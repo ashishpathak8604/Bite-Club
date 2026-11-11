@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import ImageWithFallback from '../common/ImageWithFallback'
 import { lockScroll, unlockScroll } from '../../utils/scroll'
+import { unsplashAtWidth, unsplashSrcSet } from '../../utils/images'
 
 const categoryLabels = {
   food: 'Food',
@@ -13,11 +14,15 @@ const categoryLabels = {
 
 export default function Lightbox({ images, index, onClose, onPrev, onNext }) {
   const open = index !== null
+  const closeRef = useRef(null)
+  const restoreFocusRef = useRef(null)
 
   useEffect(() => {
     if (!open) return
     const previous = document.body.style.overflow
+    restoreFocusRef.current = document.activeElement
     lockScroll()
+    closeRef.current?.focus()
     const onKey = (e) => {
       if (e.key === 'Escape') onClose()
       if (e.key === 'ArrowRight') onNext()
@@ -27,8 +32,25 @@ export default function Lightbox({ images, index, onClose, onPrev, onNext }) {
     return () => {
       unlockScroll(previous)
       window.removeEventListener('keydown', onKey)
+      if (restoreFocusRef.current instanceof HTMLElement) {
+        restoreFocusRef.current.focus({ preventScroll: true })
+      }
     }
   }, [open, onClose, onPrev, onNext])
+
+  useEffect(() => {
+    if (!open || images.length < 2) return
+    const next = images[(index + 1) % images.length]
+    const prev = images[(index - 1 + images.length) % images.length]
+    const preloaded = [next, prev].map((img) => {
+      const image = new Image()
+      image.src = unsplashAtWidth(img.src, 1200)
+      return image
+    })
+    return () => preloaded.forEach((image) => {
+      image.src = ''
+    })
+  }, [open, index, images])
 
   const image = open ? images[index] : null
 
@@ -47,6 +69,7 @@ export default function Lightbox({ images, index, onClose, onPrev, onNext }) {
           aria-label="Image viewer"
         >
           <button
+            ref={closeRef}
             type="button"
             onClick={onClose}
             aria-label="Close image viewer"
@@ -91,6 +114,8 @@ export default function Lightbox({ images, index, onClose, onPrev, onNext }) {
             <div className="overflow-hidden rounded-[1.2rem] border-[3px] border-cream/80 bg-cream shadow-2xl">
               <ImageWithFallback
                 src={image.src}
+                srcSet={unsplashSrcSet(image.src, [800, 1200, 1600])}
+                sizes="(max-width: 1024px) 92vw, 896px"
                 alt={image.alt}
                 loading="eager"
                 className="max-h-[70vh] w-auto max-w-full object-contain"

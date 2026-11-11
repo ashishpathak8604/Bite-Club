@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight, Clock, Mail, MapPin, Phone } from 'lucide-react'
 import { navLinks, siteInfo } from '../../data/siteData'
 import ImageWithFallback from './ImageWithFallback'
+import { unsplashSrcSet } from '../../utils/images'
 import {
   DoodleArrow,
   DoodleBurst,
@@ -121,6 +122,8 @@ export default function Footer() {
           >
             <ImageWithFallback
               src={img.src}
+              srcSet={unsplashSrcSet(img.src, [160, 240, 320])}
+              sizes="160px"
               alt={img.alt}
               className="h-full w-full object-cover"
             />

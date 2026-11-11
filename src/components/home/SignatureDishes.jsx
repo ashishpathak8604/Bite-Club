@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Plus } from 'lucide-react'
 import { signatureDishes } from '../../data/menuData'
 import { useCart } from '../../context/CartContext'
 import { formatINR } from '../../utils/format'
+import { unsplashSrcSet } from '../../utils/images'
 import ImageWithFallback from '../common/ImageWithFallback'
 import SectionHeading from '../common/SectionHeading'
 import ScrollReveal from '../common/ScrollReveal'
@@ -14,16 +15,33 @@ import {
   DoodleStar,
 } from '../common/DoodleElements'
 
+const CARD_TRANSITION = `
+  transform 850ms cubic-bezier(0.16, 1, 0.3, 1),
+  opacity 500ms ease,
+  filter 500ms ease
+`
+
+const cardTransform = ({ x, y, rotateY, rotate, scale }) => `
+  translate3d(
+    calc(-50% + ${x}px),
+    calc(-50% + ${y}px),
+    0
+  )
+  rotateY(${rotateY}deg)
+  rotate(${rotate}deg)
+  scale(${scale})
+`
+
 export default function SignatureDishes() {
   const [active, setActive] = useState(
     Math.floor(signatureDishes.length / 2)
   )
   const [width, setWidth] = useState(1100)
-  const [drag, setDrag] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
 
   const containerRef = useRef(null)
   const animationFrame = useRef(null)
+  const cardRefs = useRef([])
 
   const dragState = useRef({
     down: false,
@@ -69,6 +87,42 @@ export default function SignatureDishes() {
   const activeDish = signatureDishes[wrap(active)]
   const activeQty = getQty(activeDish.id)
 
+  const getCardState = (dishIndex, activeValue, dragValue) => {
+    const offset =
+      ((dishIndex - activeValue + total / 2) % total + total) % total -
+      total / 2
+
+    const dragOffset = spacing > 0 ? dragValue / spacing : 0
+    const position = offset + dragOffset
+    const abs = Math.abs(position)
+    const isActive = dishIndex === wrap(activeValue) && Math.abs(dragValue) < 5
+
+    return {
+      isActive,
+      x: position * spacing,
+      y: -Math.pow(abs, 1.3) * (isMobile ? 12 : 16),
+      scale: Math.max(0.60, 1.12 - abs * 0.13),
+      rotate: position * (isMobile ? 4 : 6),
+      rotateY: position * -9,
+      opacity: abs > 4.5 ? 0 : 1,
+      zIndex: 100 - Math.round(abs * 10),
+    }
+  }
+
+  const applyCardStates = (activeValue, dragValue, animate) => {
+    cardRefs.current.forEach((el, dishIndex) => {
+      if (!el) return
+      const state = getCardState(dishIndex, activeValue, dragValue)
+
+      el.style.transition = animate ? CARD_TRANSITION : 'none'
+      el.style.transform = cardTransform(state)
+      el.style.opacity = String(state.opacity)
+      el.style.zIndex = String(state.zIndex)
+      el.style.filter = state.isActive ? 'none' : 'saturate(0.85)'
+      el.style.pointerEvents = state.opacity === 0 ? 'none' : 'auto'
+    })
+  }
+
   // Infinite navigation
   const go = (direction) => {
     setActive((current) => wrap(current + direction))
@@ -98,11 +152,11 @@ export default function SignatureDishes() {
       dragState.current.didDrag = true
     }
 
-    // Limit React updates to animation frames
+    // Update transforms outside React so dragging never re-renders the reel
     if (animationFrame.current !== null) return
 
     animationFrame.current = requestAnimationFrame(() => {
-      setDrag(dragState.current.delta)
+      applyCardStates(active, dragState.current.delta, false)
       animationFrame.current = null
     })
   }
@@ -121,14 +175,14 @@ export default function SignatureDishes() {
       ? Math.round(-delta / (spacing * 0.7))
       : 0
 
+    const nextActive = Number.isFinite(steps) ? wrap(active + steps) : active
+
     dragState.current.down = false
+    dragState.current.delta = 0
 
-    if (Number.isFinite(steps) && steps !== 0) {
-      setActive((current) => wrap(current + steps))
-    }
-
-    setDrag(0)
+    setActive(nextActive)
     setIsDragging(false)
+    applyCardStates(nextActive, 0, true)
   }
 
   const onItemClick = (index) => {
@@ -211,42 +265,18 @@ export default function SignatureDishes() {
 
           {/* Every dish keeps a stable React identity */}
           {signatureDishes.map((dish, dishIndex) => {
-
-            // Calculate shortest circular distance
-            const offset =
-              ((dishIndex - active + total / 2) % total + total) % total -
-              total / 2
-
-            const dragOffset = spacing > 0 ? drag / spacing : 0
-
-            const position = offset + dragOffset
-            const abs = Math.abs(position)
-
-            const isActive = dishIndex === wrap(active) && Math.abs(drag) < 5
-
-            const x = position * spacing
-
-            const y =
-              -Math.pow(abs, 1.3) * (isMobile ? 12 : 16)
-
-            const scale = Math.max(
-              0.60,
-              1.12 - abs * 0.13
-            )
-
-            const rotate = position * (isMobile ? 4 : 6)
-            const rotateY = position * -9
-
-            const opacity = abs > 4.5 ? 0 : 1
-
-            const zIndex = 100 - Math.round(abs * 10)
+            const state = getCardState(dishIndex, active, 0)
+            const { isActive, opacity, zIndex } = state
 
             return (
               <button
                 type="button"
                 key={dish.id}
+                ref={(el) => {
+                  cardRefs.current[dishIndex] = el
+                }}
                 onClick={() => onItemClick(dishIndex)}
-                aria-label={`Show ${dish.name}`}
+                aria-label={`Show ${dish.name} signature`}
                 aria-current={isActive ? 'true' : undefined}
                 tabIndex={opacity === 0 ? -1 : 0}
                 className="absolute left-1/2 top-1/2 overflow-hidden rounded-[1.4rem] border-[3px] border-choco bg-cream shadow-[0_18px_35px_-18px_rgba(85,59,50,0.7)]"
@@ -261,33 +291,19 @@ export default function SignatureDishes() {
                     ? 'none'
                     : 'saturate(0.85)',
 
-                  transform: `
-                    translate3d(
-                      calc(-50% + ${x}px),
-                      calc(-50% + ${y}px),
-                      0
-                    )
-                    rotateY(${rotateY}deg)
-                    rotate(${rotate}deg)
-                    scale(${scale})
-                  `,
+                  transform: cardTransform(state),
 
-                  transition: isDragging
-                    ? 'none'
-                    : `
-                      transform 850ms cubic-bezier(0.16, 1, 0.3, 1),
-                      opacity 500ms ease,
-                      filter 500ms ease
-                    `,
+                  transition: isDragging ? 'none' : CARD_TRANSITION,
 
                   transformStyle: 'preserve-3d',
-                  willChange: 'transform',
                   backfaceVisibility: 'hidden',
                 }}
               >
 
                 <ImageWithFallback
                   src={dish.image}
+                  srcSet={unsplashSrcSet(dish.image, [320, 480, 640])}
+                  sizes="(max-width: 640px) 65vw, 310px"
                   alt={dish.name}
                   className="h-full w-full object-cover pointer-events-none"
                 />
@@ -299,7 +315,10 @@ export default function SignatureDishes() {
 
                 {/* Signature badge */}
                 {isActive && (
-                  <span className="pointer-events-none absolute left-2 top-2 rounded-full border-2 border-choco bg-butter px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide">
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-2 top-2 rounded-full border-2 border-choco bg-butter px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide"
+                  >
                     signature
                   </span>
                 )}
@@ -374,7 +393,7 @@ export default function SignatureDishes() {
         </div>
 
         {/* Dish indicators */}
-        <div className="mt-1 flex items-center gap-1.5">
+        <div className="mt-1 flex items-center gap-0">
 
           {signatureDishes.map((dish, i) => (
             <button
@@ -383,12 +402,16 @@ export default function SignatureDishes() {
               onClick={() => setActive(i)}
               aria-label={`Go to ${dish.name}`}
               aria-current={i === active ? 'true' : undefined}
-              className={`h-2 rounded-full border border-choco transition-all duration-500 ${
-                i === active
-                  ? 'w-6 bg-choco'
-                  : 'w-2 bg-cream'
-              }`}
-            />
+              className="grid h-6 w-6 place-items-center"
+            >
+              <span
+                className={`h-2 rounded-full border border-choco transition-all duration-500 ${
+                  i === active
+                    ? 'w-6 bg-choco'
+                    : 'w-2 bg-cream'
+                }`}
+              />
+            </button>
           ))}
 
         </div>

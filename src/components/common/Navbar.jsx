@@ -55,9 +55,12 @@ export default function Navbar() {
         ? 'bg-cream/95 shadow-[4px_4px_0_0_#553B32]'
         : 'bg-cream/45 shadow-[3px_3px_0_0_rgba(85,59,50,0.55)]'
     }`}
-    aria-label="Bite Club home"
+    aria-label="B Bite Club Kitchen & Good Moods — home"
   >
-    <span className="relative grid h-10 w-10 place-items-center rounded-full border-[3px] border-choco bg-butter transition-transform duration-300 group-hover:rotate-12">
+    <span
+      aria-hidden="true"
+      className="relative grid h-10 w-10 place-items-center rounded-full border-[3px] border-choco bg-butter transition-transform duration-300 group-hover:rotate-12"
+    >
       <span className="font-display text-lg leading-none">B</span>
       <DoodleStar className="absolute -right-2 -top-2 h-4 w-4" />
     </span>

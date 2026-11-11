@@ -1,3 +1,4 @@
+
 import Hero from '../components/home/Hero'
 import MenuPreview from '../components/home/MenuPreview'
 import SignatureDishes from '../components/home/SignatureDishes'
@@ -17,6 +18,7 @@ const strip = [
 export default function Home() {
   return (
     <>
+    
       <Hero />
       <Marquee items={strip} tone="choco" />
       <MenuPreview />

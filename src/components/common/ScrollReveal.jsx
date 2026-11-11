@@ -1,8 +1,4 @@
 import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
 
 export default function ScrollReveal({
   children,
@@ -21,26 +17,57 @@ export default function ScrollReveal({
     if (!el) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    const targets = stagger > 0 ? Array.from(el.children) : el
-    if (stagger > 0 && targets.length === 0) return
+    const targets = stagger > 0 ? Array.from(el.children) : [el]
+    if (targets.length === 0) return
 
-    const ctx = gsap.context(() => {
-      gsap.from(targets, {
-        y,
-        opacity: 0,
-        duration,
-        delay,
-        stagger,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: el,
-          start,
-          once: true,
-        },
+    targets.forEach((target, index) => {
+      target.style.opacity = '0'
+      target.style.transform = `translate3d(0, ${y}px, 0)`
+      target.style.transition = `opacity ${duration}s cubic-bezier(0.22, 1, 0.36, 1) ${
+        delay + index * stagger
+      }s, transform ${duration}s cubic-bezier(0.22, 1, 0.36, 1) ${delay + index * stagger}s`
+      target.style.willChange = 'opacity, transform'
+    })
+
+    const reveal = () => {
+      targets.forEach((target) => {
+        target.style.opacity = '1'
+        target.style.transform = 'translate3d(0, 0, 0)'
+
+        const done = () => {
+          target.style.opacity = ''
+          target.style.transform = ''
+          target.style.transition = ''
+          target.style.willChange = ''
+        }
+        target.addEventListener('transitionend', done, { once: true })
       })
-    }, el)
+    }
 
-    return () => ctx.revert()
+    const percentage = start.startsWith('top ') ? Number.parseFloat(start.slice(4)) : NaN
+    const rootMargin = Number.isFinite(percentage) ? `0px 0px ${percentage - 100}% 0px` : '0px'
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          reveal()
+          observer.disconnect()
+        }
+      },
+      { rootMargin },
+    )
+
+    observer.observe(el)
+
+    return () => {
+      observer.disconnect()
+      targets.forEach((target) => {
+        target.style.opacity = ''
+        target.style.transform = ''
+        target.style.transition = ''
+        target.style.willChange = ''
+      })
+    }
   }, [y, delay, stagger, duration, start])
 
   return (

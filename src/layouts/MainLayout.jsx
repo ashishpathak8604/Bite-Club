@@ -1,7 +1,6 @@
 import { Suspense, useEffect } from 'react'
 import { useLocation, useOutlet } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion } from 'framer-motion'
 import Navbar from '../components/common/Navbar'
 import Footer from '../components/common/Footer'
 import CartDrawer from '../components/cart/CartDrawer'
@@ -23,8 +22,6 @@ export default function MainLayout() {
     } else {
       window.scrollTo(0, 0)
     }
-    const timer = setTimeout(() => ScrollTrigger.refresh(), 120)
-    return () => clearTimeout(timer)
   }, [location.pathname, lenisRef])
 
   return (
@@ -36,21 +33,18 @@ export default function MainLayout() {
         Skip to content
       </a>
       <Navbar />
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.main
-          key={location.pathname}
-          id="main-content"
-          className="flex-1"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.28, ease: 'easeOut' }}
-        >
-          <Suspense fallback={<LoadingState message="Setting the table…" />}>
-            {outlet}
-          </Suspense>
-        </motion.main>
-      </AnimatePresence>
+      <motion.main
+        key={location.pathname}
+        id="main-content"
+        className="flex-1"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+      >
+        <Suspense fallback={<LoadingState message="Setting the table…" />}>
+          {outlet}
+        </Suspense>
+      </motion.main>
       <Footer />
       <CartDrawer />
       <CartToast />

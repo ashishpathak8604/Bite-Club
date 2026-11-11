@@ -23,7 +23,7 @@ export default function MenuFilters({
 }) {
   return (
    <div className="relative z-10 mx-auto w-[calc(100%-2rem)] max-w-6xl translate-y-23">
-      <div className="rounded-[1.5rem] border-[3px] border-choco bg-cream/95 p-3 shadow-[4px_4px_0_0_#553B32] backdrop-blur-xl sm:p-4">
+      <div className="rounded-[1.5rem] border-[3px] border-choco bg-cream p-3 shadow-[4px_4px_0_0_#553B32] sm:p-4">
 
         {/* Search and controls */}
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">

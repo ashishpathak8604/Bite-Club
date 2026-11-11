@@ -75,6 +75,7 @@ export function CartProvider({ children }) {
   }, [])
 
   const clearCart = useCallback(() => setItems([]), [])
+  const dismissToast = useCallback(() => setToast(null), [])
 
   const openCart = useCallback(() => setCartOpen(true), [])
   const closeCart = useCallback(() => setCartOpen(false), [])
@@ -103,7 +104,7 @@ export function CartProvider({ children }) {
       closeCart,
       getQty,
       notify,
-      dismissToast: () => setToast(null),
+      dismissToast,
     }),
     [
       items,
@@ -121,6 +122,7 @@ export function CartProvider({ children }) {
       closeCart,
       getQty,
       notify,
+      dismissToast,
     ],
   )
 

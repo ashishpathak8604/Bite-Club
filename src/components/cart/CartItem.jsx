@@ -1,5 +1,6 @@
 import { Trash2 } from 'lucide-react'
 import { formatINR } from '../../utils/format'
+import { unsplashSrcSet } from '../../utils/images'
 import QuantitySelector from '../common/QuantitySelector'
 import ImageWithFallback from '../common/ImageWithFallback'
 
@@ -15,7 +16,13 @@ export default function CartItem({ item, compact = false }) {
           compact ? 'h-16 w-16' : 'h-20 w-20 sm:h-24 sm:w-24'
         }`}
       >
-        <ImageWithFallback src={item.image} alt={item.name} className="h-full w-full object-cover" />
+        <ImageWithFallback
+          src={item.image}
+          srcSet={unsplashSrcSet(item.image, [128, 192, 256])}
+          sizes={compact ? '64px' : '(max-width: 640px) 80px, 96px'}
+          alt={item.name}
+          className="h-full w-full object-cover"
+        />
       </div>
 
       <div className="min-w-0 flex-1">
